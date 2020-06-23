@@ -51,7 +51,7 @@ export default function ReportForm(props) {
 
     const id = (match) ? match.params.id ?? 0 : 0;
     const timestamp = (match) ? match.params.time ?? 0 : 0;
-    const filled = props.filled ?? false;
+
     const locked = id && timestamp;
 
     const classes = useStyles();
@@ -60,12 +60,16 @@ export default function ReportForm(props) {
             fetchReport(timestamp);
         }
         fetchAllPumps();
+        if (!locked && id) {
+            loadOptions(id);
+
+        }
 
     }, [])
 
-    const [state, setState] = useState({ ...initialState, pumpId: props.pumpId ?? "-1" });
+    const [state, setState] = useState({ ...initialState, pumpId: (id) ? id : "-1" });
     const [pumps, setAllPumps] = useState([]);
-    const [selected, updateSelected] = useState(0);
+    const [selected, updateSelected] = useState((id) ? id : 0);
     const [submitted, setSubmitted] = useState(false);
     const [failure, setFailure] = useState(false);
     const [notify, setNotify] = useState(false);
@@ -106,7 +110,7 @@ export default function ReportForm(props) {
         }
     }
     const handleMchanges = (m) => {
-        console.log(m);
+
         setState({ ...state, materials: m })
     }
     const handleCustomChange = (name, value) => {
@@ -121,9 +125,9 @@ export default function ReportForm(props) {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(state)
+                body: JSON.stringify({ ...state, interventionDate: state.failureDate })
             };
-            console.log(state)
+
             const res = await fetch(`${backendUrl}/postIntervention`, requestOptions);
             debugger;
             console.log(res);
