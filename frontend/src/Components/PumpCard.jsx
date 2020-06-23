@@ -45,8 +45,8 @@ function getTimeDelta(date) {
 }
 function getStatus(expectedDate) {
     let delta = getTimeDelta(expectedDate)
-    if (delta > oneDay * 60) return "OK";
-    if (delta > oneDay * 30) return "WARN";
+    if (delta > oneDay * 30) return "OK";
+    if (delta > oneDay * 7) return "WARN";
     return "SWARN";
 }
 
